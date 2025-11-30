@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.jwt.project.jwt.JwtUtil;
 import com.jwt.project.jwt.LoginFilter;
 
 @Configuration
@@ -24,10 +25,11 @@ import com.jwt.project.jwt.LoginFilter;
 public class SecurityConfig {
 
 	private final AuthenticationConfiguration authenticationConfiguration;
+	private final JwtUtil jwtUtil;
 	
-	
-	public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+	public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil) {
 		this.authenticationConfiguration = authenticationConfiguration;
+		this.jwtUtil = jwtUtil;
 	}
 
 	@Bean
@@ -49,7 +51,7 @@ public class SecurityConfig {
 				.anyRequest().authenticated());
 
 		
-		http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 		
 		// 세션 설정
 		http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
