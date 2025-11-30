@@ -26,7 +26,7 @@ public class JoinService {
 		if(result) {
 			return;
 		}
-		String encodedPassword = bCryptPasswordEncoder.encode(joinDTO.getUsername());
+		String encodedPassword = bCryptPasswordEncoder.encode(joinDTO.getPassword());
 		
 		UserEntity newuser = new UserEntity(joinDTO);
 		newuser.setRole("ROLE_ADMIN");
