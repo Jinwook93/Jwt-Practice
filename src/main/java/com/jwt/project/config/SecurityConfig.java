@@ -1,7 +1,9 @@
 package com.jwt.project.config;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.tomcat.util.file.ConfigurationSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpRequest;
@@ -20,6 +22,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.jwt.project.jwt.JwtFilter;
 import com.jwt.project.jwt.JwtUtil;
 import com.jwt.project.jwt.LoginFilter;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -43,8 +47,49 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
+	
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+	    CorsConfiguration configuration = new CorsConfiguration();
+	    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+	    configuration.setAllowedMethods(Collections.singletonList("*"));
+	    configuration.setAllowCredentials(true);
+	    configuration.setAllowedHeaders(Collections.singletonList("*"));
+	    configuration.setMaxAge(3600L);
+	    configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	    source.registerCorsConfiguration("/**", configuration);
+	    return source;
+	}
+	
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		
+//		http
+//        .cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
+//
+//            @Override
+//            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+//
+//                CorsConfiguration configuration = new CorsConfiguration();
+//
+//                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+//                configuration.setAllowedMethods(Collections.singletonList("*"));
+//                configuration.setAllowCredentials(true);
+//                configuration.setAllowedHeaders(Collections.singletonList("*"));
+//                configuration.setMaxAge(3600L);
+//
+//									configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+//
+//                return configuration;
+//            }
+//        })));
+		
+		http.cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource ())); // Bean 주입
+
+		
 		// csrf disable
 		http.csrf((auth) -> auth.disable());
 		// From 로그인 방식 disable
