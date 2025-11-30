@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.jwt.project.jwt.JwtFilter;
 import com.jwt.project.jwt.JwtUtil;
 import com.jwt.project.jwt.LoginFilter;
 
@@ -38,6 +39,11 @@ public class SecurityConfig {
 	}
 	
 	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		// csrf disable
 		http.csrf((auth) -> auth.disable());
@@ -50,7 +56,7 @@ public class SecurityConfig {
 				.requestMatchers("/admin").hasRole("ADMIN")
 				.anyRequest().authenticated());
 
-		
+		http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
 		http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 		
 		// 세션 설정
@@ -59,9 +65,6 @@ public class SecurityConfig {
 
 	}
 
-	@Bean
-	public BCryptPasswordEncoder bCryptPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+
 
 }

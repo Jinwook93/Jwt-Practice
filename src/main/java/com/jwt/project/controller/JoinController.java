@@ -26,11 +26,5 @@ public class JoinController {
         return "ok";
     }
     
-//    @PostMapping("/login")
-//    public String loginProcess(JoinDTO joinDTO) {
-//
-//        joinService.loginProcess(joinDTO);
-//
-//        return "ok";
-//    }
+
 }

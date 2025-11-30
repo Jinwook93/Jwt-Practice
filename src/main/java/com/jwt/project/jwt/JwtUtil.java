@@ -39,12 +39,27 @@ public class JwtUtil {
 		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
 	}
 	
+//	public Boolean isExpired(String token) {
+//	    try {
+//	        Date expiration = Jwts.parser()
+//	                              .verifyWith(secretKey)
+//	                              .build()
+//	                              .parseSignedClaims(token)
+//	                              .getPayload()
+//	                              .getExpiration();
+//	        return expiration.before(new Date());
+//	    } catch (io.jsonwebtoken.ExpiredJwtException e) {
+//	        System.out.println("토큰 만료됨");
+//	        return true;
+//	    }
+//	}
+	
 	 public Boolean isExpired(String token) {
 
 	        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
 	    }
 
-	public String createToken(String username, String role, Long expiredMs){
+	public String createJwt(String username, String role, Long expiredMs){
 			return Jwts.builder()
 					.claim("username", username)
 	                .claim("role", role)
