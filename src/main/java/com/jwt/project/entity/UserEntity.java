@@ -1,5 +1,9 @@
 package com.jwt.project.entity;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.jwt.project.dto.JoinDTO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,4 +24,13 @@ public class UserEntity {
     private String password;
 
     private String role;
+    
+    
+    public UserEntity(JoinDTO joinDTO){
+    	
+    	this.username = joinDTO.getUsername();
+//    	this.role = "ROLE_ADMIN";
+    }
+    
+    
 }
